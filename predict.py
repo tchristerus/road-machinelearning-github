@@ -81,7 +81,7 @@ def predict_unseen_data():
 			length = len(all_predictions)
 			while looper < length:
 				label = get_label(all_predictions[looper])
-				print("The model predicts that '%s' to be '%s' " %(data, label))
+				print(label)
 				looper +=1
 			
 
