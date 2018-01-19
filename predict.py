@@ -10,20 +10,14 @@ from tensorflow.contrib import learn
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 tf.logging.set_verbosity(tf.logging.ERROR)
 def get_label(input):
-	if input == 0:
-		return"Bugfix"
-	if input == 1:
-		return"Change"
-	if input == 2:
-		return"Merge"
-	if input == 3:
-		return"Remove"
-	if input == 4:
-		return"Add"
+	jsonlabel = json.loads(open('./labels.json').read())
+	contentlabel = jsonlabel[int(input)]
+	return contentlabel
+	
 def predict_unseen_data():
 	"""Step 0: load trained model and parameters"""
 	params = json.loads(open('./parameters.json').read())
-	checkpoint_dir = sys.argv[1]
+	checkpoint_dir = "trained_model_1516138925/"
 	if not checkpoint_dir.endswith('/'):
 		checkpoint_dir += '/'
 	checkpoint_file = tf.train.latest_checkpoint(checkpoint_dir + 'checkpoints')
@@ -31,7 +25,7 @@ def predict_unseen_data():
 
 	"""Step 1: load data for prediction"""
 	data = {}
-	data = sys.argv[2]
+	data = sys.argv[1]
 	message = ('[{"content": "%s"}]')%(data)
 	
 	test_examples = json.loads(message)
@@ -79,9 +73,16 @@ def predict_unseen_data():
 			print("Predictions:")
 			looper = 0
 			length = len(all_predictions)
+			location_dataset = "data/Dataset.csv"
 			while looper < length:
 				label = get_label(all_predictions[looper])
+				#Change," Updated the rule file"
 				print(label)
+				print (data)
+				dataset = "\n%s,\"%s\" "%(label,data)
+				f = open(location_dataset, "a")
+				f.write(dataset)
+				f.close
 				looper +=1
 			
 
